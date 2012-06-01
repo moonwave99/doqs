@@ -10,7 +10,7 @@ Well, [see Doqs in action!](http://moonwave99.webfactional.com/doqs/)
 
 Just clone this repository into desired webserver path:
 
-	$ git clone https://github.com/moonwave99/doq
+	$ git clone https://github.com/moonwave99/doqs
 
 or unzip in same location if you prefer. Then in ```index.php``` you have to config a bunch of constants:
 
