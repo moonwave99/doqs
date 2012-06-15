@@ -141,10 +141,14 @@ class Resource
 
 	}
 
-	public function getBody()
+	public function getBody($raw = false)
 	{
 
-		return $this -> isFile() ? Markdown(file_get_contents($this -> getAbsolutePath())) : false;
+		return $this -> isFile() ?
+			(!$raw ?
+				Markdown(file_get_contents($this -> getAbsolutePath())) :
+				file_get_contents($this -> getAbsolutePath())
+			) : false;
 
 	}
 
@@ -188,8 +192,11 @@ class Navigator
 
 		!$this -> resource -> exists() && $this -> notFound();
 
-		if($this -> resource -> isFile())
-		{
+		if(isset($_GET['raw'])){
+
+			echo $this -> resource -> getBody(true);
+
+		}else if($this -> resource -> isFile()){
 
 			include(__DIR__ . "/templates/doc.php");
 
