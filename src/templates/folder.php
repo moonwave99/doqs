@@ -14,7 +14,7 @@
 <html>
 	<head>
   		<meta charset="utf-8"/>
-  		<title><?php echo REPO_NAME ." - browsing /" . $this -> resource -> getRelativePath() ?></title>
+  		<title><?php echo REPO_NAME ." - browsing /" . $folder -> getRelativePath() ?></title>
   		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<meta name="csrf" content="<?php echo $this -> csrf ?>"/>
   		<link rel="stylesheet" type="text/css" href="<?php echo BASE_PATH ?>web/css/bootstrap.min.css"/>
@@ -33,7 +33,7 @@
 				<li><i class="icon-home"></i></li>
 <?php
 
-	$tokens = $this -> resource -> getPathTokens();
+	$tokens = $folder -> getPathTokens();
 
 foreach($tokens as $i => $token):?>
 		<li <?php echo $i == count($tokens) -1 ? 'class="active"' : '' ?>>
@@ -44,7 +44,7 @@ foreach($tokens as $i => $token):?>
 
 			</ul>
 
-			<table id="folder-table" class="table table-striped table-bordered">
+			<table id="folder-table" class="table table-striped table-bordered" data-controller="folder" data-action="fetch" data-startup>
 			  <thead>
 			    <tr>
 			      <th>File</th>
@@ -52,32 +52,58 @@ foreach($tokens as $i => $token):?>
 			  </thead>
 			  <tbody>
 
-				<?php foreach($this -> resource -> getContent() as $i => $res):?>
-
-					<tr>
-						<td>
-							<i class="<?php echo $res -> isFile() ? "icon-file" : "icon-" . ($i == 0 && $this -> resource -> getName() !== "" ? "arrow-up" : "folder-close") ?>"></i>
-							<a class="folder" href="<?php echo $res -> getWebPath() ?>"><?php echo $i == 0 && $this -> resource -> getName() !== "" ? ".." : $res -> getName() ?></a>
-						</td>
-					</tr>
-
-				<?php endforeach;?>
-
 			  </tbody>
 			</table>
 			<p class="folder-actions">
 				<a class="btn btn-mini btn-primary" href="#" data-controller="folder" data-action="newDoc"><i class="icon-file icon-white"></i> New Document</a>
+				<a class="btn btn-mini btn-primary" href="#" data-controller="folder" data-action="newFolder"><i class="icon-folder-open icon-white"></i> New Folder</a>
 			</p>
 			<?php include("footer.php") ?>
 
 		</div>
 
-		<script type="text/template" id="folder-row-new">
+		<script type="text/template" id="folder-doc">
+			<tr>
+				<td>
+					<i class="icon-file"></i> <a href="<%=basePath+doc.path%>"><%=doc.name%></a>
+				</td>
+			</tr>
+		</script>
+
+		<script type="text/template" id="folder-folder">
+			<tr>
+				<td>
+					<i class="icon-folder-close"></i> <a href="<%=basePath+folder.path%>"><%=folder.name%></a>
+				</td>
+			</tr>
+		</script>
+
+		<script type="text/template" id="folder-folder-parent">
+			<tr>
+				<td>
+					<i class="icon-arrow-up"></i> <a href="<%=basePath+folder.path%>">..</a>
+				</td>
+			</tr>
+		</script>
+
+		<script type="text/template" id="folder-new-doc">
 			<tr>
 				<td>
 					<i class="icon-file"></i>
-					<form data-controller="folder" data-action="create" class="homepage-form">
-						<input type="text" name="fileName" placeholder="Choose a filename" required/>
+					<form data-controller="folder" data-action="createDoc" class="homepage-form">
+						<input type="text" name="resName" placeholder="Choose a filename" required/>
+						<span class="label label-important"></span>
+						<a class="close" data-dismiss="alert" href="#" data-controller="folder" data-action="createCancel">×</a>
+					</form>
+				</td>
+			</tr>
+		</script>
+		<script type="text/template" id="folder-new-folder">
+			<tr>
+				<td>
+					<i class="icon-folder-close"></i>
+					<form data-controller="folder" data-action="createFolder" class="homepage-form">
+						<input type="text" name="resName" placeholder="Choose a folder name" required/>
 						<span class="label label-important"></span>
 						<a class="close" data-dismiss="alert" href="#" data-controller="folder" data-action="createCancel">×</a>
 					</form>
@@ -87,6 +113,7 @@ foreach($tokens as $i => $token):?>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 		<script src="<?php echo BASE_PATH ?>web/js/underscore-min.js"></script>
+		<script>var basePath = '<?php echo BASE_PATH ?>';</script>
 		<script src="<?php echo BASE_PATH ?>web/js/scripts.js"></script>
 	</body>
 </html>

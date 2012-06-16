@@ -61,11 +61,41 @@ FRONTEND = {
 
 		table : $('#folder-table'),
 
-		newButton : null,
+		newFileButton : null,
+
+		newFolderButton : null,
 
 		templates : {
 
-			newDoc : $('#folder-row-new').length > 0 ? _.template($('#folder-row-new').html()) : null
+			doc : $('#folder-doc').length > 0 ? _.template($('#folder-doc').html()) : null ,
+			folder : $('#folder-folder').length > 0 ? _.template($('#folder-folder').html()) : null ,
+			parentFolder : $('#folder-folder-parent').length > 0 ? _.template($('#folder-folder-parent').html()) : null ,
+			newDoc : $('#folder-new-doc').length > 0 ? _.template($('#folder-new-doc').html()) : null ,
+			newFolder : $('#folder-new-folder').length > 0 ? _.template($('#folder-new-folder').html()) : null ,
+
+		},
+
+		fetch : function(table){
+
+			$.getJSON(window.location.url, { format : 'json' }, function(data){
+
+				_.each(data.folders, function(f, i){
+
+					$('tbody', table).append(
+						i == 0 && !data.root ?
+							FRONTEND.folder.templates.parentFolder({ folder : f })
+						: 	FRONTEND.folder.templates.folder({ folder : f })
+					);
+
+				});
+
+				_.each(data.files, function(f, i){
+
+					$('tbody', table).append(FRONTEND.folder.templates.doc({ doc : f }));
+
+				});
+
+			});
 
 		},
 
@@ -74,7 +104,7 @@ FRONTEND = {
 			if($(element).attr('disabled'))
 				return;
 
-			this.newButton = $(element).attr('disabled','');
+			this.newFileButton = $(element).attr('disabled','');
 
 			var row = this.templates.newDoc({ });
 
@@ -82,13 +112,26 @@ FRONTEND = {
 
 		},
 
-		create : function(form){
+		newFolder : function(element){
+
+			if($(element).attr('disabled'))
+				return;
+
+			this.newFolderButton = $(element).attr('disabled','');
+
+			var row = this.templates.newFolder({ });
+
+			$('tbody', this.table).append(row).find('input').focus();
+
+		},
+
+		createDoc : function(form){
 
 			$.post(
 				window.location.href,
 				{
 					csrf : FRONTEND.csrf,
-					fileName : $('input[name="fileName"]', form).val()
+					fileName : $('input[name="resName"]', form).val()
 				},
 				function(data){
 
@@ -105,7 +148,36 @@ FRONTEND = {
 
 			}).complete(function(){
 
-				$(FRONTEND.folder.newButton).removeAttr('disabled');
+				$(FRONTEND.folder.newFileButton).removeAttr('disabled');
+
+			});
+
+		},
+
+		createFolder : function(form){
+
+			$.post(
+				window.location.href,
+				{
+					csrf : FRONTEND.csrf,
+					folderName : $('input[name="resName"]', form).val()
+				},
+				function(data){
+
+					data = $.parseJSON(data);
+
+					$(form).parent().append($('<a></a>').addClass('folder').html(data.relativePath).attr('href', data.url));
+					$(form).remove();
+
+				}
+
+			).error(function(){
+
+				$('.label', form).html('File already exists.').show();
+
+			}).complete(function(){
+
+				$(FRONTEND.folder.newFolderButton).removeAttr('disabled');
 
 			});
 
@@ -174,28 +246,32 @@ FRONTEND = {
 
 			$(element).attr('disabled', '');
 
-			$.post(
-				window.location.href,
-				{ csrf : FRONTEND.csrf, data : this.editor.getSession().getDocument().getValue() },
-				function(data){
+			$.ajax({
+				url : window.location.href,
+				type : 'PUT',
+				data : { csrf : FRONTEND.csrf, data : this.editor.getSession().getDocument().getValue() },
+				success : function(data){
 
 					$('#original').html(data);
 					$(element).removeAttr('disabled').addClass('btn-success');
 
+				},
+				error : function(){
+
+					alert('There has been an error saving.');
+					$(element).removeAttr('disabled').addClass('btn-danger');
+
+				},
+
+				complete : function(){
+
+					setTimeout(function(){
+
+						$(element).removeClass('btn-danger').removeClass('btn-success');
+
+					}, 2000);
+
 				}
-			).error(function(){
-
-				alert('There has been an error saving.');
-				$(element).removeAttr('disabled').addClass('btn-danger');
-
-			}).complete(function(){
-
-				setTimeout(function(){
-
-					$(element).removeClass('btn-danger').removeClass('btn-success');
-
-				}, 2000);
-
 			});
 
 		}

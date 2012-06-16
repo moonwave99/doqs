@@ -13,7 +13,7 @@
 <html>
 	<head>
   		<meta charset="utf-8"/>
-  		<title><?php echo REPO_NAME ." - Reading " . $this -> resource -> getName() ?></title>
+  		<title><?php echo REPO_NAME ." - Reading " . $file -> getName() ?></title>
   		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<meta name="csrf" content="<?php echo $this -> csrf ?>"/>
   		<link rel="stylesheet" type="text/css" href="<?php echo BASE_PATH ?>web/css/bootstrap.min.css"/>
@@ -25,7 +25,7 @@
 
   		<div class="container">
 			<p>
-				<a class="btn btn-mini btn-inverse" href="<?php echo BASE_PATH . $this -> resource -> getParentPath() ?> "><i class="icon-arrow-left icon-white"></i> Back to Folder</a>
+				<a class="btn btn-mini btn-inverse" href="<?php echo BASE_PATH . $file -> getParentPath() ?> "><i class="icon-arrow-left icon-white"></i> Back to Folder</a>
 				<a class="btn btn-mini btn-primary" href="#" data-controller="docs" data-action="showEditPane"><i class="icon-pencil icon-white"></i> Edit Document</a>
 			</p>
 			<div class="well doc">
@@ -33,7 +33,7 @@
 				<div id="box" style="display:none">
 
 					<h2 class="title">
-						Editing <?php echo $this -> resource -> getName() ?>
+						Editing <?php echo $file -> getName() ?>
 						<span class="pull-right">
 						<a class="btn btn-mini btn-primary" href="#" data-controller="docs" data-action="save"><i class="icon-ok icon-white"></i> Save Changes</a>
 						<a class="btn btn-mini" href="#" data-controller="docs" data-action="hideEditPane"><i class="icon-remove "></i> Close</a>
@@ -47,7 +47,7 @@
 
 				<div id="original">
 
-					<?php echo $this -> resource -> getBody() ?: 'This document is empty.' ?>
+					<?php echo $file -> getBody() ?: 'This document is empty.' ?>
 				</div>
 
 			</div>
