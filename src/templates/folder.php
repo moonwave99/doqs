@@ -9,12 +9,14 @@
 */
 
 ?>
+
 <!DOCTYPE html>
 <html>
 	<head>
   		<meta charset="utf-8"/>
   		<title><?php echo REPO_NAME ." - browsing /" . $this -> resource -> getRelativePath() ?></title>
   		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="csrf" content="<?php echo $this -> csrf ?>"/>
   		<link rel="stylesheet" type="text/css" href="<?php echo BASE_PATH ?>web/css/bootstrap.min.css"/>
   		<link rel="stylesheet" type="text/css" href="<?php echo BASE_PATH ?>web/css/main.css"/>
 		<style>@media print {#generated-toc{display:none!important}}</style>
@@ -42,7 +44,7 @@ foreach($tokens as $i => $token):?>
 
 			</ul>
 
-			<table class="table table-striped table-bordered">
+			<table id="folder-table" class="table table-striped table-bordered">
 			  <thead>
 			    <tr>
 			      <th>File</th>
@@ -50,7 +52,7 @@ foreach($tokens as $i => $token):?>
 			  </thead>
 			  <tbody>
 
-				<?php foreach($this -> data['content'] as $i => $res):?>
+				<?php foreach($this -> resource -> getContent() as $i => $res):?>
 
 					<tr>
 						<td>
@@ -63,9 +65,28 @@ foreach($tokens as $i => $token):?>
 
 			  </tbody>
 			</table>
-
+			<p class="folder-actions">
+				<a class="btn btn-mini btn-primary" href="#" data-controller="folder" data-action="newDoc"><i class="icon-file icon-white"></i> New Document</a>
+			</p>
 			<?php include("footer.php") ?>
 
 		</div>
+
+		<script type="text/template" id="folder-row-new">
+			<tr>
+				<td>
+					<i class="icon-file"></i>
+					<form data-controller="folder" data-action="create" class="homepage-form">
+						<input type="text" name="fileName" placeholder="Choose a filename" required/>
+						<span class="label label-important"></span>
+						<a class="close" data-dismiss="alert" href="#" data-controller="folder" data-action="createCancel">×</a>
+					</form>
+				</td>
+			</tr>
+		</script>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+		<script src="<?php echo BASE_PATH ?>web/js/underscore-min.js"></script>
+		<script src="<?php echo BASE_PATH ?>web/js/scripts.js"></script>
 	</body>
 </html>

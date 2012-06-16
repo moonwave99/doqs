@@ -1,6 +1,6 @@
 #Doqs - a simple Markdown Documents Repository.
 
-You need a simple way to *write* down your documents and specs, as you need a nice way to *present* them - just follow the [Markdown](http://daringfireball.net/projects/markdown/) path. In a github fashion I wrote a very simple repository for MD files you can put on your webserver so you can share documents between mates. I used [this nice PHP MD parsing library](http://michelf.com/projects/php-markdown) by **Michel Fortin** and ubiquitous [Bootstrap](http://twitter.github.com/bootstrap/).
+You need a simple way to *write* down your documents and specs, as you need a nice way to *present* them - just follow the [Markdown](http://daringfireball.net/projects/markdown/) path. In a github fashion I wrote a very simple repository for MD files you can put on your webserver so you can share documents between mates. I used [this nice PHP MD parsing library](http://michelf.com/projects/php-markdown) by **Michel Fortin**, awesome [ACE editor](http://ace.ajax.org/) and ubiquitous [Bootstrap](http://twitter.github.com/bootstrap/).
 
 Well, [see Doqs in action!](http://moonwave99.webfactional.com/doqs/)
 
@@ -35,6 +35,11 @@ being:
 Point your browser to the ```BASE_PATH```, then read your docs - not very much more to say.
 
 ---
+
+##Version History
+
+* **0.2** : online editor, new docs creation, csrf control;
+* **0.1** : initial release.
 
 ##Copyright and license
 

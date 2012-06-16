@@ -10,20 +10,22 @@
 
 include __DIR__ . "/markdown.php";
 
-function pre($stuff)
-{
-
-	echo '<pre>';
-	print_r($stuff);
-	echo '</pre>';
-
-}
-
+/**
+*	Resource Class - represents filesystem entry.
+*/
 class Resource
 {
 
+	/**
+	*	@access protected
+	*	@var string $path
+	*/
 	protected $path;
 
+	/**
+	*	Default constructor.
+	*	@access public
+	*/
 	public function __construct($path)
 	{
 
@@ -31,6 +33,11 @@ class Resource
 
 	}
 
+	/**
+	*	Returns resource name
+	*	@access public
+	*	@return string
+	*/
 	public function getName()
 	{
 
@@ -38,6 +45,11 @@ class Resource
 
 	}
 
+	/**
+	*	Returns true if resource is a file, false if it is a folder
+	*	@access public
+	*	@return boolean
+	*/
 	public function isFile()
 	{
 
@@ -45,6 +57,11 @@ class Resource
 
 	}
 
+	/**
+	*	Returns true if file exists
+	*	@access public
+	*	@return boolean
+	*/
 	public function exists()
 	{
 
@@ -52,6 +69,11 @@ class Resource
 
 	}
 
+	/**
+	*	Returns full path of resource in filesystem
+	*	@access public
+	*	@return string
+	*/
 	public function getAbsolutePath()
 	{
 
@@ -59,6 +81,11 @@ class Resource
 
 	}
 
+	/**
+	*	Returns web path of resource
+	*	@access public
+	*	@return string
+	*/
 	public function getWebPath()
 	{
 
@@ -66,6 +93,11 @@ class Resource
 
 	}
 
+	/**
+	*	Returns relative path
+	*	@access public
+	*	@return string
+	*/
 	public function getRelativePath()
 	{
 
@@ -73,6 +105,11 @@ class Resource
 
 	}
 
+	/**
+	*	Returns parent folder path
+	*	@access public
+	*	@return string
+	*/
 	public function getParentPath()
 	{
 
@@ -82,6 +119,11 @@ class Resource
 
 	}
 
+	/**
+	*	Splits path into tokens, split at slash char
+	*	@access public
+	*	@return array
+	*/
 	public function getPathTokens()
 	{
 
@@ -112,6 +154,11 @@ class Resource
 
 	}
 
+	/**
+	*	Returns folder content
+	*	@access public
+	*	@return array
+	*/
 	public function getContent()
 	{
 
@@ -141,35 +188,162 @@ class Resource
 
 	}
 
+	/**
+	*	Sets resource body
+	*	@access public
+	*	@param string $body The body being set
+	*/
+	public function setBody($body)
+	{
+
+		$this -> body = $body;
+
+	}
+
+	/**
+	*	Creates resource, returns true if succesfully
+	*	@access public
+	*	@return boolean
+	*/
+	public function create()
+	{
+
+		return (!$this -> isFile() || $this -> exists()) ? false : $this -> save();
+
+	}
+
+	/**
+	*	Deletes resource, returns true if succesfully
+	*	@access public
+	*	@return boolean
+	*/
+	public function delete()
+	{
+
+		if(!$this -> isFile())
+			return;
+
+		return unlink($this -> getAbsolutePath());
+
+	}
+
+	/**
+	*	Saves resource, returns true if succesfully
+	*	@access public
+	*	@return boolean
+	*/
+	public function save()
+	{
+
+		return @file_put_contents($this -> getAbsolutePath(), $this -> body) !== false;
+
+	}
+
+	/**
+	*	Gets resource body
+	*	@access public
+	*	@param boolean $raw Prevents Markdown parsing if true
+	*	@return string
+	*/
 	public function getBody($raw = false)
 	{
 
 		return $this -> isFile() ?
-			(!$raw ?
-				Markdown(file_get_contents($this -> getAbsolutePath())) :
-				file_get_contents($this -> getAbsolutePath())
+			trim(!$raw ?
+				Markdown(@file_get_contents($this -> getAbsolutePath())) :
+				@file_get_contents($this -> getAbsolutePath())
 			) : false;
 
 	}
 
 }
 
+/**
+*	Navigator Class - routes and handles requests.
+*/
 class Navigator
 {
 
+	/**
+	*	@access protected
+	*	@var Resource $resource
+	*/
 	protected $resource;
 
-	protected $data;
+	/**
+	*	@access protected
+	*	@var string $csrf
+	*/
+	protected $csrf;
 
+	/**
+	*	Default constructor.
+	*	@access public
+	*/
 	public function __construct()
 	{
 
-		$this -> data = array();
-
 		$this -> resource = new Resource($this -> getPatternFromURI());
+
+		session_start();
+
+		if( !isset($_SESSION['csrf']) )
+			$_SESSION['csrf'] = sha1(microtime());
+
+		$this -> csrf = $_SESSION['csrf'];
 
 	}
 
+	/**
+	*	Handles client request.
+	*	@access public
+	*/
+	public function route()
+	{
+
+		!$this -> resource -> exists() && $this -> notFound();
+
+		if($_SERVER['REQUEST_METHOD'] == "POST"){
+
+			!$this -> csrfCheck() && $this -> forbid();
+
+			if($this -> resource -> isFile()){
+
+				$this -> resource -> setBody($_POST['data']);
+				$this -> resource -> save() ? print( $this -> resource -> getBody() ) : header("HTTP/1.0 500 Server Error");
+
+				exit;
+
+			}
+
+			$res = new Resource(
+				$this -> resource -> getRelativePath() . $_POST['fileName'] . (strpos('.md', $_POST['fileName']) !== false ? "" : ".md")
+			);
+
+			!$res -> create() && header("HTTP/1.0 409 Conflict");
+
+			echo json_encode(array(
+				'relativePath' => $res -> getRelativePath(),
+				'url' => $res -> getWebPath()
+			));
+
+		}else if(isset($_GET['raw'])){
+
+			!$this -> csrfCheck() && $this -> forbid();
+
+			echo $this -> resource -> getBody(true);
+
+		}else
+
+			include( sprintf (__DIR__ . "/templates/%s.php", $this -> resource -> isFile() ? 'doc' : 'folder'));
+
+	}
+
+	/**
+	*	Returns resource path from full URI
+	*	@access protected
+	*	@return string
+	*/
 	protected function getPatternFromURI()
 	{
 
@@ -187,34 +361,39 @@ class Navigator
 
 	}
 
-	public function route()
+	/**
+	*	Checks if request CSRF token matches the one stored in session
+	*	@access protected
+	*	@return boolean
+	*/
+	protected function csrfCheck()
 	{
 
-		!$this -> resource -> exists() && $this -> notFound();
-
-		if(isset($_GET['raw'])){
-
-			echo $this -> resource -> getBody(true);
-
-		}else if($this -> resource -> isFile()){
-
-			include(__DIR__ . "/templates/doc.php");
-
-		}else{
-
-			$this -> data['content'] = $this -> resource -> getContent();
-
-			include(__DIR__ . "/templates/folder.php");
-
-		}
+		return $_REQUEST['csrf'] === $_SESSION['csrf'];
 
 	}
 
+	/**
+	*	Returns a 403 response to client
+	*	@access protected
+	*/
+	protected function forbid()
+	{
+
+		header('HTTP/1.0 403 Forbidden');
+		exit;
+
+	}
+
+	/**
+	*	Returns a 404 response to client
+	*	@access protected
+	*/
 	protected function notFound()
 	{
 
 		header("HTTP/1.0 404 Not Found");
-		include(__DIR__ . "/templates/404.php");
+		include( __DIR__ . "/templates/404.php");
 		exit;
 
 	}

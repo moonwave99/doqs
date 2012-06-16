@@ -26,6 +26,26 @@ table{
 
 }
 
+.folder-actions{
+	text-align:right;
+}
+
+#folder-table input[type="text"]{
+
+	height:12px;
+	margin-bottom:0px;
+
+}
+
+#folder-table form{
+	display:inline;
+	margin:0;
+}
+
+#folder-table form .label{
+	display:none;
+}
+
 .doc {
 	line-height: 1.4em;
 	background-color:white;
@@ -45,4 +65,23 @@ table{
 
 .doc li {
 	margin: 0.2em 0 0 0em; padding: 0px;
+}
+
+#box{
+	height:670px;
+	padding-bottom:20px;
+	border-bottom:1px solid #eee;
+}
+
+#box .title{
+	width:900px;
+	padding-bottom:10px;
+	margin-bottom:20px;
+	border-bottom:1px solid #eee;
+}
+
+#editor{
+    position: absolute;
+	width: 900px;
+	height:600px;
 }

@@ -15,6 +15,7 @@
   		<meta charset="utf-8"/>
   		<title><?php echo REPO_NAME ." - Reading " . $this -> resource -> getName() ?></title>
   		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="csrf" content="<?php echo $this -> csrf ?>"/>
   		<link rel="stylesheet" type="text/css" href="<?php echo BASE_PATH ?>web/css/bootstrap.min.css"/>
   		<link rel="stylesheet" type="text/css" href="<?php echo BASE_PATH ?>web/css/main.css"/>
 	</head>
@@ -24,16 +25,41 @@
 
   		<div class="container">
 			<p>
-				<a class="btn btn-mini btn-primary" href="<?php echo BASE_PATH . $this -> resource -> getParentPath() ?> ">Back to Folder</a>
+				<a class="btn btn-mini btn-inverse" href="<?php echo BASE_PATH . $this -> resource -> getParentPath() ?> "><i class="icon-arrow-left icon-white"></i> Back to Folder</a>
+				<a class="btn btn-mini btn-primary" href="#" data-controller="docs" data-action="showEditPane"><i class="icon-pencil icon-white"></i> Edit Document</a>
 			</p>
 			<div class="well doc">
 
-			<?php echo $this -> resource -> getBody() ?>
+				<div id="box" style="display:none">
+
+					<h2 class="title">
+						Editing <?php echo $this -> resource -> getName() ?>
+						<span class="pull-right">
+						<a class="btn btn-mini btn-primary" href="#" data-controller="docs" data-action="save"><i class="icon-ok icon-white"></i> Save Changes</a>
+						<a class="btn btn-mini" href="#" data-controller="docs" data-action="hideEditPane"><i class="icon-remove "></i> Close</a>
+						</span>
+
+					</h2>
+
+					<div id="editor"></div>
+
+				</div>
+
+				<div id="original">
+
+					<?php echo $this -> resource -> getBody() ?: 'This document is empty.' ?>
+				</div>
 
 			</div>
 
 			<?php include("footer.php") ?>
 
 		</div>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+		<script src="<?php echo BASE_PATH ?>web/js/underscore-min.js"></script>
+		<script src="<?php echo BASE_PATH ?>web/js/ace.js"></script>
+		<script src="<?php echo BASE_PATH ?>web/js/theme-twilight.js"></script>
+		<script src="<?php echo BASE_PATH ?>web/js/mode-markdown.js"></script>
+		<script src="<?php echo BASE_PATH ?>web/js/scripts.js"></script>
 	</body>
 </html>

@@ -8,7 +8,7 @@
 *	@license http://www.opensource.org/licenses/mit-license.php MIT License
 */
 
-define('BASE_PATH', 'http://www.somesite.com/some/path/');
+define('BASE_PATH', 'http://somesite.com/path/to/');
 define('DOCS_PATH', __DIR__ . "/docs/");
 define("REPO_NAME", 'Doqs');
 define("REPO_DESC", 'Markdown document repository.');
