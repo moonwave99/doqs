@@ -48,6 +48,7 @@ foreach($tokens as $i => $token):?>
 			  <thead>
 			    <tr>
 			      <th>File</th>
+				  <th style="width:10%"></th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -63,17 +64,33 @@ foreach($tokens as $i => $token):?>
 		</div>
 
 		<script type="text/template" id="folder-doc">
-			<tr>
+			<tr data-path="<%=doc.path%>">
 				<td>
 					<i class="icon-file"></i> <a href="<%=basePath+doc.path%>"><%=doc.name%></a>
+				</td>
+				<td>
+					<a href="#" class="btn btn-mini btn-inverse" data-controller="folder" data-action="editDoc">
+						<i class="icon-pencil icon-white"></i>
+					</a>
+					<a href="#" class="btn btn-mini btn-inverse" data-controller="folder" data-action="deleteDoc">
+						<i class="icon-trash icon-white"></i>
+					</a>
 				</td>
 			</tr>
 		</script>
 
 		<script type="text/template" id="folder-folder">
-			<tr>
+			<tr data-path="<%=folder.path%>">
 				<td>
 					<i class="icon-folder-close"></i> <a href="<%=basePath+folder.path%>"><%=folder.name%></a>
+				</td>
+				<td>
+					<a href="#" class="btn btn-mini btn-inverse" data-controller="folder" data-action="editFolder">
+						<i class="icon-pencil icon-white"></i>
+					</a>
+					<a href="#" class="btn btn-mini btn-inverse" data-controller="folder" data-action="deleteFolder">
+						<i class="icon-trash icon-white"></i>
+					</a>
 				</td>
 			</tr>
 		</script>
@@ -83,6 +100,7 @@ foreach($tokens as $i => $token):?>
 				<td>
 					<i class="icon-arrow-up"></i> <a href="<%=basePath+folder.path%>">..</a>
 				</td>
+				<td></td>
 			</tr>
 		</script>
 
@@ -96,6 +114,7 @@ foreach($tokens as $i => $token):?>
 						<a class="close" data-dismiss="alert" href="#" data-controller="folder" data-action="createCancel">×</a>
 					</form>
 				</td>
+				<td></td>
 			</tr>
 		</script>
 		<script type="text/template" id="folder-new-folder">
@@ -108,6 +127,7 @@ foreach($tokens as $i => $token):?>
 						<a class="close" data-dismiss="alert" href="#" data-controller="folder" data-action="createCancel">×</a>
 					</form>
 				</td>
+				<td></td>
 			</tr>
 		</script>
 

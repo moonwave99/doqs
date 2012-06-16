@@ -74,7 +74,7 @@ class Controller
 
 		if($this -> request -> fileName){
 
-			$res = new File($folder -> getRelativePath() . "/" . $this -> request -> fileName);
+			$res = new File($folder -> getRelativePath() . "/" . $this -> request -> fileName . (strpos($this -> request -> fileName, '.md') === false ? '.md' : ''));
 
 		}else{
 
@@ -84,9 +84,12 @@ class Controller
 
 		!$res -> create() && header("HTTP/1.0 409 Conflict");
 
+		header('Cache-Control: no-cache, must-revalidate');
+		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+		header('Content-type: application/json');
 		echo json_encode(array(
-			'relativePath' => $res -> getName(),
-			'url' => $res -> getWebPath()
+			'name' => $res -> getName(),
+			'path' => $res -> getRelativePath()
 		));
 
 	}

@@ -157,10 +157,12 @@ class Request
 	{
 
 		$_PUT = array();
+		$_DELETE = array();
 
 		$this -> method == 'PUT' && parse_str(file_get_contents('php://input'), $_PUT);
+		$this -> method == 'DELETE' && parse_str(file_get_contents('php://input'), $_DELETE);
 
-		foreach(array($_GET, $_POST, $_PUT, $_COOKIE, $_SERVER) as $req)
+		foreach(array($_GET, $_POST, $_PUT, $_DELETE, $_COOKIE, $_SERVER) as $req)
 		{
 
 			if (get_magic_quotes_gpc())

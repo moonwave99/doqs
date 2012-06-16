@@ -135,10 +135,7 @@ FRONTEND = {
 				},
 				function(data){
 
-					data = $.parseJSON(data);
-
-					$(form).parent().append($('<a></a>').addClass('folder').html(data.relativePath).attr('href', data.url));
-					$(form).remove();
+					$(form).closest('tr').replaceWith(FRONTEND.folder.templates.doc({ doc : data }));
 
 				}
 
@@ -164,10 +161,7 @@ FRONTEND = {
 				},
 				function(data){
 
-					data = $.parseJSON(data);
-
-					$(form).parent().append($('<a></a>').addClass('folder').html(data.relativePath).attr('href', data.url));
-					$(form).remove();
+					$(form).closest('tr').replaceWith(FRONTEND.folder.templates.folder({ folder : data }));
 
 				}
 
@@ -179,6 +173,72 @@ FRONTEND = {
 
 				$(FRONTEND.folder.newFolderButton).removeAttr('disabled');
 
+			});
+
+		},
+
+		editDoc : function(element){
+
+			console.log(element);
+
+		},
+
+		editFolder : function(element){
+
+			console.log(element);
+
+		},
+
+		deleteDoc : function(element){
+
+			if(!confirm('You cannot undo this, are you sure?'))
+				return;
+
+			$.ajax({
+				url : basePath + $(element).closest('tr').attr('data-path'),
+				type : 'DELETE',
+				data : { csrf : FRONTEND.csrf },
+				success : function(data){
+
+					$(element).closest('tr').hide('slow', function(){ $(this).remove(); });
+
+				},
+				error : function(){
+
+
+
+				},
+
+				complete : function(){
+
+				}
+			});
+
+		},
+
+		deleteFolder : function(element){
+
+			if(!confirm('You cannot undo this, are you sure?'))
+				return;
+
+			$.ajax({
+				url : basePath + $(element).closest('tr').attr('data-path'),
+				type : 'DELETE',
+				data : { csrf : FRONTEND.csrf },
+				success : function(data){
+
+					$(element).closest('tr').hide('slow', function(){ $(this).remove(); });
+
+				},
+				error : function(){
+
+
+
+				},
+
+				complete : function(){
+
+				}
 			});
 
 		},
