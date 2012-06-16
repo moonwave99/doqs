@@ -36,6 +36,11 @@ Point your browser to the ```BASE_PATH```, then read your docs - not very much m
 
 ---
 
+##Version History
+
+* **0.2** : online editor, new docs creation, csrf control;
+* **0.1** : initial release.
+
 ##Copyright and license
 
 Copyright (c) 2012 MWLabs
