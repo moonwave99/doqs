@@ -23,6 +23,12 @@ class Controller
 	*/
 	protected $request;
 
+	/**
+	*	Default constructor.
+	*	@access public
+	*	@param string $csrf CSRF token stored in session
+	*	@param Request $request Request instance coming from router
+	*/
 	public function __construct($csrf, $request)
 	{
 
@@ -94,17 +100,42 @@ class Controller
 
 	}
 
-	public function putFolder($folder)
+	public function putFolder($res)
 	{
 
+		!$res -> rename($this -> request -> resName) && header("HTTP/1.0 409 Conflict");
+
+		header('Cache-Control: no-cache, must-revalidate');
+		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+		header('Content-type: application/json');
+		echo json_encode(array(
+			'name' => $res -> getName(),
+			'path' => $res -> getRelativePath()
+		));
 
 	}
 
 	public function putFile($file)
 	{
 
-		$file -> setBody($this -> request -> data);
-		$file -> save() ? print( $file -> getBody() ) : header("HTTP/1.0 500 Server Error");
+		if($this -> request -> resName){
+
+			!$file -> rename($this -> request -> resName) && header("HTTP/1.0 409 Conflict");
+
+			header('Cache-Control: no-cache, must-revalidate');
+			header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+			header('Content-type: application/json');
+			echo json_encode(array(
+				'name' => $file -> getName(),
+				'path' => $file -> getRelativePath()
+			));
+
+		}else{
+
+			$file -> setBody($this -> request -> data);
+			$file -> save() ? print( $file -> getBody() ) : header("HTTP/1.0 500 Server Error");
+
+		}
 
 	}
 

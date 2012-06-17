@@ -72,6 +72,8 @@ FRONTEND = {
 			parentFolder : $('#folder-folder-parent').length > 0 ? _.template($('#folder-folder-parent').html()) : null ,
 			newDoc : $('#folder-new-doc').length > 0 ? _.template($('#folder-new-doc').html()) : null ,
 			newFolder : $('#folder-new-folder').length > 0 ? _.template($('#folder-new-folder').html()) : null ,
+			editDoc : $('#folder-edit-doc').length > 0 ? _.template($('#folder-edit-doc').html()) : null ,
+			editFolder : $('#folder-edit-folder').length > 0 ? _.template($('#folder-edit-folder').html()) : null ,
 
 		},
 
@@ -179,13 +181,77 @@ FRONTEND = {
 
 		editDoc : function(element){
 
-			console.log(element);
+			var path = $(element).closest('tr').attr('data-path').split('/');
+
+			var row = this.templates.editDoc({
+				name : path.pop(),
+				path : path.join('/')
+			});
+
+			$(element).closest('tr').hide().after(row).next().find('input').focus();
 
 		},
 
 		editFolder : function(element){
 
-			console.log(element);
+			var path = $(element).closest('tr').attr('data-path').split('/');
+
+			var row = this.templates.editFolder({
+				name : path.pop(),
+				path : path.join('/')
+			});
+
+			$(element).closest('tr').hide().after(row).next().find('input').focus();
+
+		},
+
+		saveDoc : function(form){
+
+			$.ajax({
+				url : basePath + $(form).closest('tr').prev().attr('data-path'),
+				type : 'PUT',
+				data : { csrf : FRONTEND.csrf, resName : $(form).closest('tr').attr('data-path')+"/"+$('input[name="resName"]', form).val() },
+				success : function(data){
+
+					$(form).closest('tr').prev().replaceWith(FRONTEND.folder.templates.doc({ doc : data }));
+					$(form).closest('tr').remove();
+
+				},
+				error : function(){
+
+					$('.label', form).html('File already exists.').show();
+
+				},
+
+				complete : function(){
+
+				}
+			});
+
+		},
+
+		saveFolder : function(form){
+
+			$.ajax({
+				url : basePath + $(form).closest('tr').prev().attr('data-path'),
+				type : 'PUT',
+				data : { csrf : FRONTEND.csrf, resName : $(form).closest('tr').attr('data-path')+"/"+$('input[name="resName"]', form).val() },
+				success : function(data){
+
+					$(form).closest('tr').prev().replaceWith(FRONTEND.folder.templates.folder({ folder : data }));
+					$(form).closest('tr').remove();
+
+				},
+				error : function(){
+
+					$('.label', form).html('Folder already exists.').show();
+
+				},
+
+				complete : function(){
+
+				}
+			});
 
 		},
 
@@ -240,6 +306,12 @@ FRONTEND = {
 
 				}
 			});
+
+		},
+
+		editCancel : function(element){
+
+			$(element).closest('tr').hide().prev().show().next().remove();
 
 		},
 
