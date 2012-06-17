@@ -37,6 +37,11 @@ table{
 
 }
 
+#folder-table tr th:last-child{
+	width:10%;
+	text-align:center
+}
+
 #folder-table form{
 	display:inline;
 	margin:0;
@@ -44,6 +49,10 @@ table{
 
 #folder-table form .label{
 	display:none;
+}
+
+#folder-table tr td:last-child{
+	text-align:center;
 }
 
 .doc {

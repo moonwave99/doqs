@@ -154,9 +154,7 @@ class Resource
 
 		if(file_exists( DOCS_PATH . $name )) return false;
 
-		$result = @rename($this -> getAbsolutePath(), DOCS_PATH . $name) && $this -> path = $name;
-
-		return $result;
+		return @rename($this -> getAbsolutePath(), DOCS_PATH . $name) && $this -> path = $name;
 
 	}
 

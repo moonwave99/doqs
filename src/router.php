@@ -126,13 +126,28 @@ class Router
 
 }
 
+/**
+*	Request Class - wraps HTTP request.
+*/
 class Request
 {
 
+	/**
+	*	@access protected
+	*	@var array $values
+	*/
 	protected $values;
 
+	/**
+	*	@access protected
+	*	@var string $method
+	*/
 	protected $method;
 
+	/**
+	*	Default constructor.
+	*	@access public
+	*/
 	public function __construct()
 	{
 
@@ -144,6 +159,12 @@ class Request
 
 	}
 
+	/**
+	*	Magic getter.
+	*	@access public
+	*	@param string $key The key looking for
+	*	@return string
+	*/
 	public function __get($key)
 	{
 
@@ -151,18 +172,25 @@ class Request
 
 	}
 
+	/**
+	*	Returns request method.
+	*	@access public
+	*	@return string
+	*/
 	public function getMethod(){ return $this -> method; }
 
+	/**
+	*	Cleans request against XSS, listens to raw input in PUT/DELETE requests, fills $values array.
+	*	@access public
+	*/
 	protected function cleanRequest()
 	{
 
-		$_PUT = array();
-		$_DELETE = array();
+		$_RAW = array();
 
-		$this -> method == 'PUT' && parse_str(file_get_contents('php://input'), $_PUT);
-		$this -> method == 'DELETE' && parse_str(file_get_contents('php://input'), $_DELETE);
+		($this -> method == 'PUT' || $this -> method == 'DELETE') && parse_str(file_get_contents('php://input'), $_RAW);
 
-		foreach(array($_GET, $_POST, $_PUT, $_DELETE, $_COOKIE, $_SERVER) as $req)
+		foreach(array($_GET, $_POST, $_RAW, $_COOKIE, $_SERVER) as $req)
 		{
 
 			if (get_magic_quotes_gpc())
@@ -191,7 +219,7 @@ class Request
 
 		unset($_GET);
 		unset($_POST);
-		unset($_PUT);
+		unset($_RAW);
 		unset($_COOKIE);
 
 	}

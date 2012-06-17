@@ -48,7 +48,7 @@ foreach($tokens as $i => $token):?>
 			  <thead>
 			    <tr>
 			      <th>File</th>
-				  <th style="width:10%"></th>
+				  <th>Actions</th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -111,10 +111,13 @@ foreach($tokens as $i => $token):?>
 					<form data-controller="folder" data-action="createDoc" class="homepage-form">
 						<input type="text" name="resName" placeholder="Choose a filename" required/>
 						<span class="label label-important"></span>
-						<a class="close" data-dismiss="alert" href="#" data-controller="folder" data-action="createCancel">×</a>
 					</form>
 				</td>
-				<td></td>
+				<td>
+					<a href="#" class="btn btn-mini btn-inverse" data-controller="folder" data-action="createCancel">
+						<i class="icon-remove icon-white"></i> Cancel
+					</a>
+				</td>
 			</tr>
 		</script>
 		<script type="text/template" id="folder-new-folder">
@@ -124,10 +127,46 @@ foreach($tokens as $i => $token):?>
 					<form data-controller="folder" data-action="createFolder" class="homepage-form">
 						<input type="text" name="resName" placeholder="Choose a folder name" required/>
 						<span class="label label-important"></span>
-						<a class="close" data-dismiss="alert" href="#" data-controller="folder" data-action="createCancel">×</a>
 					</form>
 				</td>
-				<td></td>
+				<td>
+					<a href="#" class="btn btn-mini btn-inverse" data-controller="folder" data-action="createCancel">
+						<i class="icon-remove icon-white"></i> Cancel
+					</a>
+				</td>
+			</tr>
+		</script>
+
+		<script type="text/template" id="folder-edit-doc">
+			<tr data-path="<%=path%>">
+				<td>
+					<i class="icon-file"></i>
+					<form data-controller="folder" data-action="saveDoc" class="homepage-form">
+						<input type="text" name="resName" placeholder="Choose a filename"  value="<%=name%>" required/>
+						<span class="label label-important"></span>
+					</form>
+				</td>
+				<td>
+					<a href="#" class="btn btn-mini btn-inverse" data-controller="folder" data-action="editCancel">
+						<i class="icon-remove icon-white"></i> Cancel
+					</a>
+				</td>
+			</tr>
+		</script>
+		<script type="text/template" id="folder-edit-folder">
+			<tr data-path="<%=path%>">
+				<td>
+					<i class="icon-folder-close"></i>
+					<form data-controller="folder" data-action="saveFolder" class="homepage-form">
+						<input type="text" name="resName" placeholder="Choose a folder name" value="<%=name%>" required/>
+						<span class="label label-important"></span>
+					</form>
+				</td>
+				<td>
+					<a href="#" class="btn btn-mini btn-inverse" data-controller="folder" data-action="editCancel">
+						<i class="icon-remove icon-white"></i> Cancel
+					</a>
+				</td>
 			</tr>
 		</script>
 
