@@ -36,6 +36,7 @@
 						Editing <?php echo $file -> getName() ?>
 						<span class="pull-right">
 						<a class="btn btn-mini btn-primary" href="#" data-controller="docs" data-action="save"><i class="icon-ok icon-white"></i> Save Changes</a>
+						<a class="btn btn-mini" href="#original"><i class="icon-file"></i> Original</a>
 						<a class="btn btn-mini" href="#" data-controller="docs" data-action="hideEditPane"><i class="icon-remove "></i> Close</a>
 						</span>
 
