@@ -39,6 +39,8 @@ class Router
 	public function __construct()
 	{
 
+		define('BASE_PATH', 'http://' . $_SERVER['SERVER_NAME']. str_replace('index.php', '', $_SERVER['SCRIPT_NAME']));
+
 		session_start();
 
 		if( !isset($_SESSION['csrf']) )

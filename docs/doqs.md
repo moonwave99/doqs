@@ -12,17 +12,15 @@ Just clone this repository into desired webserver path:
 
 	$ git clone https://github.com/moonwave99/doqs
 
-or unzip in same location if you prefer. Then in ```index.php``` you have to config a bunch of constants:
+or unzip in same location if you prefer. Then in ```index.php``` you may config some settings:
 
-	define('BASE_PATH', 'http://www.somesite.com/some/path/');
 	define('DOCS_PATH', __DIR__ . "/docs/");
 	define("REPO_NAME", 'Doqs');
 	define("REPO_DESC", 'Markdown document repository.');
 
 being:
 
-* the base **URL** for the repo [could be ```http://localhost/``` of course];
-* the actual file folder path;
+* the actual file folder path, default being ```/docs```;
 * the repo name - will be displayed on the mainbar;
 * the repo desc - just a brief description on the main page.
 
@@ -32,12 +30,18 @@ being:
 
 ##Usage
 
-Point your browser to the ```BASE_PATH```, then read your docs - not very much more to say.
+Point your browser to the path you installed doqs, then browse your repository. You can:
+
+* create new files and folders;
+* rename and delete existing files and folders;
+* edit files online.
+
 
 ---
 
 ##Version History
 
+* **0.3** : resource edit/delete;
 * **0.2** : online editor, new docs creation, csrf control;
 * **0.1** : initial release.
 
